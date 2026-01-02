@@ -53,8 +53,8 @@ const PomodoroWidget = () => {
 
   const modes = [
     { id: "focus" as TimerMode, label: "Focus" },
-    { id: "short" as TimerMode, label: "Short break" },
-    { id: "long" as TimerMode, label: "Long break" },
+    { id: "short" as TimerMode, label: "Short" },
+    { id: "long" as TimerMode, label: "Long" },
   ];
 
   return (

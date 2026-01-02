@@ -1,6 +1,23 @@
 import { FileText, ListTodo, Timer, Volume2, Wind } from "lucide-react";
 
-const Navbar = () => {
+interface NavbarProps {
+  visibleWidgets: {
+    notes: boolean;
+    tasks: boolean;
+    timer: boolean;
+    sound: boolean;
+  };
+  onToggleWidget: (widget: keyof NavbarProps["visibleWidgets"]) => void;
+}
+
+const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
+  const navItems = [
+    { id: "notes" as const, icon: FileText, label: "Notes" },
+    { id: "tasks" as const, icon: ListTodo, label: "Tasks" },
+    { id: "timer" as const, icon: Timer, label: "Timer" },
+    { id: "sound" as const, icon: Volume2, label: "Sound" },
+  ];
+
   return (
     <nav className="widget flex items-center justify-between px-4 py-3">
       {/* Logo & Weather */}
@@ -19,15 +36,15 @@ const Navbar = () => {
 
       {/* Nav Links */}
       <div className="flex items-center gap-1">
-        {[
-          { icon: FileText, label: "Notes" },
-          { icon: ListTodo, label: "Tasks" },
-          { icon: Timer, label: "Timer" },
-          { icon: Volume2, label: "Sound" },
-        ].map((item) => (
+        {navItems.map((item) => (
           <button
             key={item.label}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+            onClick={() => onToggleWidget(item.id)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              visibleWidgets[item.id]
+                ? "bg-secondary text-foreground"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+            }`}
           >
             <item.icon className="w-4 h-4" />
             <span>{item.label}</span>
