@@ -60,7 +60,7 @@ const PomodoroWidget = () => {
   return (
     <div className="widget p-5 w-72">
       {/* Mode Selector */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex justify-center gap-2 mb-6">
         {modes.map((m) => (
           <button
             key={m.id}
@@ -79,7 +79,7 @@ const PomodoroWidget = () => {
       {/* Timer Display */}
       <div className="text-center mb-6">
         <div 
-          className={`text-7xl font-pixel tracking-wider transition-colors ${
+          className={`text-7xl font-karla font-bold tracking-wider transition-colors ${
             isRunning ? "text-timer-active animate-pulse-soft" : "text-timer-display"
           }`}
         >

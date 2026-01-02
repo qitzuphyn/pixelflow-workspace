@@ -38,17 +38,19 @@ const Index = () => {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col md:flex-row gap-4 mt-4">
           {/* Left Column */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col justify-between h-full">
             {visibleWidgets.sound && <SoundWidget />}
-            {visibleWidgets.notes && <NotesWidget />}
-            <ClockCalendarWidget />
+            <div className="flex flex-col gap-4 mt-auto">
+              {visibleWidgets.notes && <NotesWidget />}
+              <ClockCalendarWidget />
+            </div>
           </div>
 
           {/* Center - Empty space for background visibility */}
           <div className="flex-1" />
 
           {/* Right Column */}
-          <div className="flex flex-col gap-4 items-end">
+          <div className="flex flex-col gap-4 items-end mt-auto">
             {visibleWidgets.tasks && <TasksWidget />}
             {visibleWidgets.timer && <PomodoroWidget />}
           </div>

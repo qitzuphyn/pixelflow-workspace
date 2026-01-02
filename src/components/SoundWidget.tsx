@@ -94,7 +94,7 @@ const SoundWidget = () => {
             />
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="grid grid-cols-6 gap-1.5">
           {ambientSounds.map((sound) => {
             const Icon = sound.icon;
             const isActive = activeAmbient === sound.id;
@@ -102,14 +102,14 @@ const SoundWidget = () => {
               <button
                 key={sound.id}
                 onClick={() => setActiveAmbient(isActive ? null : sound.id)}
-                className={`p-2.5 rounded-full transition-all duration-200 ${
+                className={`p-2 rounded-full transition-all duration-200 ${
                   isActive 
                     ? "bg-primary text-primary-foreground shadow-sm" 
                     : "bg-secondary text-secondary-foreground hover:bg-muted"
                 }`}
                 title={sound.id.charAt(0).toUpperCase() + sound.id.slice(1)}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5" />
               </button>
             );
           })}
