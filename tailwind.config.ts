@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        pixel: ["'VT323'", "monospace"],
+        sans: ['Plus Jakarta Sans', 'sans-serif'],
+        karla: ['Karla', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

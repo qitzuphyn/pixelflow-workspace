@@ -20,39 +20,48 @@ const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
 
   return (
     <nav className="widget flex items-center justify-between px-4 py-3">
-      {/* Logo & Weather */}
-      <div className="flex items-center gap-4">
+      {/* Left Side - Logo, Weather & Nav Links */}
+      <div className="flex items-center gap-6">
+        {/* Logo */}
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm">G</span>
           </div>
           <span className="font-semibold text-foreground">Gumdrop</span>
         </div>
+
+        {/* Separator */}
+        <div className="w-px h-5 bg-border" />
+
+        {/* Weather */}
         <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
           <Wind className="w-4 h-4" />
           <span>5°c windy</span>
         </div>
+
+        {/* Separator */}
+        <div className="w-px h-5 bg-border" />
+
+        {/* Nav Links */}
+        <div className="flex items-center gap-1">
+          {navItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => onToggleWidget(item.id)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                visibleWidgets[item.id]
+                  ? "bg-secondary text-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              <item.icon className="w-4 h-4" />
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Nav Links */}
-      <div className="flex items-center gap-1">
-        {navItems.map((item) => (
-          <button
-            key={item.label}
-            onClick={() => onToggleWidget(item.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              visibleWidgets[item.id]
-                ? "bg-secondary text-foreground"
-                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-            }`}
-          >
-            <item.icon className="w-4 h-4" />
-            <span>{item.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* User Section */}
+      {/* Right Side - User Section */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center">

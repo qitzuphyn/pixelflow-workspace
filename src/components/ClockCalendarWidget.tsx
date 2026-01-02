@@ -4,6 +4,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, startOf
 
 const ClockCalendarWidget = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
   const today = new Date();
 
   useEffect(() => {
@@ -24,56 +25,65 @@ const ClockCalendarWidget = () => {
   return (
     <div className="widget p-4 w-64">
       {/* Time Display */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between">
         <div>
-          <div className="text-3xl font-bold font-pixel tracking-wider text-foreground">
+          <div className="text-3xl font-bold font-karla tracking-wider text-foreground">
             {format(currentTime, "HH:mm:ss")}
           </div>
           <div className="text-sm text-muted-foreground">
             {format(currentTime, "EEEE, MMMM d")}
           </div>
         </div>
-        <button className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={() => setShowCalendar(!showCalendar)}
+          className={`p-2 rounded-lg transition-colors ${
+            showCalendar 
+              ? "bg-primary text-primary-foreground" 
+              : "bg-secondary text-secondary-foreground hover:bg-muted"
+          }`}
+        >
           <CalendarIcon className="w-5 h-5" />
         </button>
       </div>
 
       {/* Mini Calendar */}
-      <div className="mt-4">
-        <div className="grid grid-cols-7 gap-1 mb-2">
-          {weekDays.map((day) => (
-            <div
-              key={day}
-              className="text-center text-xs text-muted-foreground font-medium"
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-7 gap-1">
-          {days.map((day, index) => {
-            const isToday = isSameDay(day, today);
-            const isCurrentMonth = day.getMonth() === today.getMonth();
-            
-            return (
-              <button
-                key={index}
-                className={`
-                  w-7 h-7 text-xs rounded-full flex items-center justify-center transition-colors
-                  ${isToday 
-                    ? "bg-primary text-primary-foreground" 
-                    : isCurrentMonth 
-                      ? "text-foreground hover:bg-secondary" 
-                      : "text-muted-foreground/50"
-                  }
-                `}
+      {showCalendar && (
+        <div className="mt-4">
+          <div className="grid grid-cols-7 gap-1 mb-2">
+            {weekDays.map((day) => (
+              <div
+                key={day}
+                className="text-center text-xs text-muted-foreground font-medium"
               >
-                {format(day, "d")}
-              </button>
-            );
-          })}
+                {day}
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+            {days.map((day, index) => {
+              const isToday = isSameDay(day, today);
+              const isCurrentMonth = day.getMonth() === today.getMonth();
+              
+              return (
+                <button
+                  key={index}
+                  className={`
+                    w-7 h-7 text-xs rounded-full flex items-center justify-center transition-colors
+                    ${isToday 
+                      ? "bg-primary text-primary-foreground" 
+                      : isCurrentMonth 
+                        ? "text-foreground hover:bg-secondary" 
+                        : "text-muted-foreground/50"
+                    }
+                  `}
+                >
+                  {format(day, "d")}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
