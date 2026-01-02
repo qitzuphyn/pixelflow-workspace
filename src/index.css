@@ -2,87 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import '@fontsource/vt323';
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 30 20% 96%;
+    --foreground: 30 10% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 40 30% 97%;
+    --card-foreground: 30 10% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 40 30% 97%;
+    --popover-foreground: 30 10% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 142 45% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 35 30% 92%;
+    --secondary-foreground: 30 10% 30%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 35 20% 90%;
+    --muted-foreground: 30 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 142 35% 55%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 35 20% 85%;
+    --input: 35 20% 88%;
+    --ring: 142 45% 45%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --widget-bg: 40 35% 98%;
+    --widget-shadow: 0 8px 32px -8px hsl(30 20% 20% / 0.15);
+    --widget-border: 35 25% 90%;
+    
+    --timer-display: 30 10% 25%;
+    --timer-active: 142 45% 45%;
+    
+    --ambient-forest: 142 45% 45%;
+    --ambient-rain: 210 50% 55%;
+    --ambient-fire: 25 90% 55%;
+    --ambient-cafe: 35 60% 50%;
+    --ambient-waves: 195 60% 55%;
+    --ambient-wind: 200 30% 60%;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 25 15% 10%;
+    --foreground: 35 20% 90%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 25 15% 14%;
+    --card-foreground: 35 20% 90%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 25 15% 14%;
+    --popover-foreground: 35 20% 90%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 45% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 25 15% 18%;
+    --secondary-foreground: 35 20% 85%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 25 15% 20%;
+    --muted-foreground: 35 15% 55%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 142 40% 45%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 25 15% 22%;
+    --input: 25 15% 20%;
+    --ring: 142 45% 50%;
+
+    --widget-bg: 25 15% 14%;
+    --widget-shadow: 0 8px 32px -8px hsl(0 0% 0% / 0.4);
+    --widget-border: 25 15% 22%;
+    
+    --timer-display: 35 20% 90%;
+    --timer-active: 142 45% 50%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -101,5 +115,42 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .widget {
+    @apply bg-widget rounded-xl shadow-widget border border-widget-border backdrop-blur-sm;
+  }
+  
+  .timer-font {
+    font-family: 'VT323', monospace;
+  }
+  
+  .ambient-btn {
+    @apply px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200;
+  }
+  
+  .ambient-btn-active {
+    @apply bg-primary text-primary-foreground shadow-sm;
+  }
+  
+  .ambient-btn-inactive {
+    @apply bg-secondary text-secondary-foreground hover:bg-muted;
+  }
+}
+
+@layer utilities {
+  .bg-widget {
+    background-color: hsl(var(--widget-bg));
+  }
+  
+  .shadow-widget {
+    box-shadow: var(--widget-shadow);
+  }
+  
+  .border-widget-border {
+    border-color: hsl(var(--widget-border));
   }
 }
