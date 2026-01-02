@@ -1,22 +1,55 @@
-import { useState } from "react";
-import { Volume2, TreePine, CloudRain, Flame, Coffee, Waves, Wind } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Volume2, TreePine, CloudRain, Flame, Coffee, Waves, Sparkles } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
 const ambientSounds = [
-  { id: "forest", label: "Forest", icon: TreePine, color: "bg-ambient-forest" },
-  { id: "rain", label: "Rain", icon: CloudRain, color: "bg-ambient-rain" },
-  { id: "fire", label: "Fire", icon: Flame, color: "bg-ambient-fire" },
-  { id: "cafe", label: "Cafe", icon: Coffee, color: "bg-ambient-cafe" },
-  { id: "waves", label: "Waves", icon: Waves, color: "bg-ambient-waves" },
-  { id: "wind", label: "Wind", icon: Wind, color: "bg-ambient-wind" },
+  { id: "forest", icon: TreePine, audioUrl: "https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" },
+  { id: "space", icon: Sparkles, audioUrl: "https://assets.mixkit.co/active_storage/sfx/1234/1234-preview.mp3" },
+  { id: "rain", icon: CloudRain, audioUrl: "https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3" },
+  { id: "fire", icon: Flame, audioUrl: "https://assets.mixkit.co/active_storage/sfx/1188/1188-preview.mp3" },
+  { id: "waves", icon: Waves, audioUrl: "https://assets.mixkit.co/active_storage/sfx/2432/2432-preview.mp3" },
+  { id: "cafe", icon: Coffee, audioUrl: "https://assets.mixkit.co/active_storage/sfx/181/181-preview.mp3" },
 ];
 
 const SoundWidget = () => {
   const [linkVolume, setLinkVolume] = useState([50]);
   const [ambientVolume, setAmbientVolume] = useState([30]);
   const [youtubeLink, setYoutubeLink] = useState("");
-  const [activeAmbient, setActiveAmbient] = useState<string | null>("forest");
+  const [activeAmbient, setActiveAmbient] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (activeAmbient) {
+      const sound = ambientSounds.find(s => s.id === activeAmbient);
+      if (sound) {
+        if (audioRef.current) {
+          audioRef.current.pause();
+        }
+        audioRef.current = new Audio(sound.audioUrl);
+        audioRef.current.loop = true;
+        audioRef.current.volume = ambientVolume[0] / 100;
+        audioRef.current.play().catch(() => {});
+      }
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, [activeAmbient]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = ambientVolume[0] / 100;
+    }
+  }, [ambientVolume]);
 
   return (
     <div className="widget p-4 w-64 space-y-4">
@@ -61,7 +94,7 @@ const SoundWidget = () => {
             />
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           {ambientSounds.map((sound) => {
             const Icon = sound.icon;
             const isActive = activeAmbient === sound.id;
@@ -69,12 +102,14 @@ const SoundWidget = () => {
               <button
                 key={sound.id}
                 onClick={() => setActiveAmbient(isActive ? null : sound.id)}
-                className={`ambient-btn flex items-center gap-1.5 ${
-                  isActive ? "ambient-btn-active" : "ambient-btn-inactive"
+                className={`p-2.5 rounded-full transition-all duration-200 ${
+                  isActive 
+                    ? "bg-primary text-primary-foreground shadow-sm" 
+                    : "bg-secondary text-secondary-foreground hover:bg-muted"
                 }`}
+                title={sound.id.charAt(0).toUpperCase() + sound.id.slice(1)}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{sound.label}</span>
+                <Icon className="w-4 h-4" />
               </button>
             );
           })}
