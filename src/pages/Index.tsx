@@ -38,23 +38,16 @@ const Index = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex flex-col p-2 md:p-3">
+      <div className="relative z-10 min-h-screen flex flex-col p-2">
         {/* Top Navbar */}
         <Navbar visibleWidgets={visibleWidgets} onToggleWidget={handleToggleWidget} />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col md:flex-row gap-3 mt-2">
+        <div className="flex-1 flex flex-col md:flex-row gap-2 mt-2">
           {/* Left Column */}
-          <div className="flex flex-col justify-between h-full min-h-[calc(100vh-80px)]">
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col justify-end h-full min-h-[calc(100vh-70px)]">
+            <div className="flex flex-col gap-2 mt-auto">
               {visibleWidgets.sound && <SoundWidget />}
-              <BackgroundSwitcher 
-                currentBg={currentBg} 
-                onChangeBg={setCurrentBg} 
-                totalBgs={backgrounds.length} 
-              />
-            </div>
-            <div className="flex flex-col gap-3 mt-auto">
               {visibleWidgets.notes && <NotesWidget />}
               <ClockCalendarWidget />
             </div>
@@ -64,12 +57,19 @@ const Index = () => {
           <div className="flex-1" />
 
           {/* Right Column */}
-          <div className="flex flex-col gap-3 items-end justify-end min-h-[calc(100vh-80px)]">
+          <div className="flex flex-col gap-2 items-end justify-end min-h-[calc(100vh-70px)]">
             {visibleWidgets.tasks && <TasksWidget />}
             {visibleWidgets.timer && <PomodoroWidget />}
           </div>
         </div>
       </div>
+
+      {/* Background Switcher - Bottom Center */}
+      <BackgroundSwitcher 
+        currentBg={currentBg} 
+        onChangeBg={setCurrentBg} 
+        totalBgs={backgrounds.length} 
+      />
     </div>
   );
 };

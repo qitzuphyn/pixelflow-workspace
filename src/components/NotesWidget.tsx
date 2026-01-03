@@ -6,7 +6,7 @@ const NotesWidget = () => {
   );
 
   return (
-    <div className="widget p-3 w-56 h-44">
+    <div className="widget p-3 w-64 h-44">
       <h3 className="font-semibold text-foreground mb-2 text-sm">Notes</h3>
       <textarea
         value={notes}
