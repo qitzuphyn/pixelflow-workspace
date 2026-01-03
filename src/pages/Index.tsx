@@ -10,8 +10,9 @@ import pixelBg1 from "@/assets/pixel-bg-1.gif";
 import pixelBg2 from "@/assets/pixel-bg-2.gif";
 import pixelBg3 from "@/assets/pixel-bg-3.gif";
 import pixelBg4 from "@/assets/pixel-bg-4.gif";
+import pixelBg5 from "@/assets/pixel-bg-5.gif";
 
-const backgrounds = [pixelBg1, pixelBg2, pixelBg3, pixelBg4];
+const backgrounds = [pixelBg1, pixelBg2, pixelBg3, pixelBg4, pixelBg5];
 
 const Index = () => {
   const [visibleWidgets, setVisibleWidgets] = useState({
