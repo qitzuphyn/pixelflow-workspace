@@ -1,4 +1,5 @@
-import { FileText, ListTodo, Timer, Volume2, Wind } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain } from "lucide-react";
 
 interface NavbarProps {
   visibleWidgets: {
@@ -10,7 +11,67 @@ interface NavbarProps {
   onToggleWidget: (widget: keyof NavbarProps["visibleWidgets"]) => void;
 }
 
+interface WeatherData {
+  temp: number;
+  condition: string;
+  city: string;
+}
+
 const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+
+  useEffect(() => {
+    // Get user's location and fetch weather
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            const response = await fetch(
+              `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`
+            );
+            const data = await response.json();
+            
+            // Get city name from reverse geocoding
+            const geoResponse = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const geoData = await geoResponse.json();
+            
+            const weatherCode = data.current.weather_code;
+            let condition = "Clear";
+            if (weatherCode >= 51 && weatherCode <= 67) condition = "Rainy";
+            else if (weatherCode >= 71 && weatherCode <= 77) condition = "Snowy";
+            else if (weatherCode >= 1 && weatherCode <= 3) condition = "Cloudy";
+            
+            setWeather({
+              temp: Math.round(data.current.temperature_2m),
+              condition,
+              city: geoData.address?.city || geoData.address?.town || geoData.address?.village || "Unknown"
+            });
+          } catch (error) {
+            console.error("Weather fetch error:", error);
+          }
+        },
+        () => {
+          // Fallback if geolocation denied
+          setWeather({ temp: 20, condition: "Clear", city: "Your City" });
+        }
+      );
+    }
+  }, []);
+
+  const getWeatherIcon = () => {
+    if (!weather) return Cloud;
+    switch (weather.condition) {
+      case "Rainy": return CloudRain;
+      case "Cloudy": return Cloud;
+      default: return Sun;
+    }
+  };
+
+  const WeatherIcon = getWeatherIcon();
+
   const navItems = [
     { id: "notes" as const, icon: FileText, label: "Notes" },
     { id: "tasks" as const, icon: ListTodo, label: "Tasks" },
@@ -19,9 +80,9 @@ const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
   ];
 
   return (
-    <nav className="widget flex items-center justify-between px-3 py-2">
-      {/* Left Side - Logo, Weather & Nav Links */}
-      <div className="flex items-center gap-4">
+    <nav className="widget flex items-center justify-between px-3 py-1.5">
+      {/* Left Side - Logo & Weather */}
+      <div className="flex items-center gap-3">
         {/* Logo */}
         <div className="flex items-center gap-1.5">
           <div className="w-5 h-5 bg-primary rounded flex items-center justify-center">
@@ -34,31 +95,34 @@ const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
         <div className="w-px h-4 bg-border" />
 
         {/* Weather */}
-        <div className="flex items-center gap-1 text-muted-foreground text-xs">
-          <Wind className="w-3.5 h-3.5" />
-          <span>5°c windy</span>
+        <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+          <WeatherIcon className="w-3.5 h-3.5" />
+          <span>{weather ? `${weather.temp}°c ${weather.condition.toLowerCase()}` : "Loading..."}</span>
+          {weather && (
+            <>
+              <MapPin className="w-3 h-3 ml-1" />
+              <span className="text-foreground/70">{weather.city}</span>
+            </>
+          )}
         </div>
+      </div>
 
-        {/* Separator */}
-        <div className="w-px h-4 bg-border" />
-
-        {/* Nav Links */}
-        <div className="flex items-center gap-0.5">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => onToggleWidget(item.id)}
-              className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors ${
-                visibleWidgets[item.id]
-                  ? "bg-secondary text-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-              }`}
-            >
-              <item.icon className="w-3.5 h-3.5" />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </div>
+      {/* Center - Nav Links */}
+      <div className="flex items-center gap-0.5">
+        {navItems.map((item) => (
+          <button
+            key={item.label}
+            onClick={() => onToggleWidget(item.id)}
+            className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors ${
+              visibleWidgets[item.id]
+                ? "bg-secondary text-foreground"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+            }`}
+          >
+            <item.icon className="w-3.5 h-3.5" />
+            <span>{item.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* Right Side - User Section */}

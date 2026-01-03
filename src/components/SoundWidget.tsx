@@ -87,8 +87,18 @@ const SoundWidget = () => {
     }
   }, [ambientVolume]);
 
+  // Update YouTube volume when slider changes
+  useEffect(() => {
+    if (iframeRef.current?.contentWindow && youtubeId) {
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "setVolume", args: [linkVolume[0]] }),
+        "*"
+      );
+    }
+  }, [linkVolume, youtubeId]);
+
   return (
-    <div className="widget p-3 w-56 space-y-3">
+    <div className="widget p-3 w-64 space-y-3">
       <h3 className="font-semibold text-foreground text-sm">Sound</h3>
       
       {/* Link Section */}
@@ -130,7 +140,7 @@ const SoundWidget = () => {
       {youtubeId && isYoutubePlaying && (
         <iframe
           ref={iframeRef}
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&enablejsapi=1&loop=1&playlist=${youtubeId}`}
+          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&enablejsapi=1&loop=1&playlist=${youtubeId}&origin=${window.location.origin}`}
           allow="autoplay"
           className="hidden"
         />
