@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Volume2, TreePine, CloudRain, Flame, Coffee, Waves, Sparkles } from "lucide-react";
+import { Volume2, TreePine, CloudRain, Flame, Coffee, Waves, Sparkles, Play, Pause } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
@@ -12,12 +12,48 @@ const ambientSounds = [
   { id: "cafe", icon: Coffee, audioUrl: "https://assets.mixkit.co/active_storage/sfx/181/181-preview.mp3" },
 ];
 
+const extractYouTubeId = (url: string): string | null => {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/shorts\/([^&\n?#]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+};
+
 const SoundWidget = () => {
   const [linkVolume, setLinkVolume] = useState([50]);
   const [ambientVolume, setAmbientVolume] = useState([30]);
   const [youtubeLink, setYoutubeLink] = useState("");
+  const [youtubeId, setYoutubeId] = useState<string | null>(null);
+  const [isYoutubePlaying, setIsYoutubePlaying] = useState(false);
   const [activeAmbient, setActiveAmbient] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const handleYoutubeLink = () => {
+    const id = extractYouTubeId(youtubeLink);
+    if (id) {
+      setYoutubeId(id);
+      setIsYoutubePlaying(true);
+    }
+  };
+
+  const toggleYoutube = () => {
+    if (youtubeId) {
+      setIsYoutubePlaying(!isYoutubePlaying);
+      if (iframeRef.current?.contentWindow) {
+        const command = isYoutubePlaying ? "pauseVideo" : "playVideo";
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: command }),
+          "*"
+        );
+      }
+    }
+  };
 
   useEffect(() => {
     if (activeAmbient) {
@@ -52,49 +88,70 @@ const SoundWidget = () => {
   }, [ambientVolume]);
 
   return (
-    <div className="widget p-4 w-64 space-y-4">
-      <h3 className="font-semibold text-foreground">Sound</h3>
+    <div className="widget p-3 w-56 space-y-3">
+      <h3 className="font-semibold text-foreground text-sm">Sound</h3>
       
       {/* Link Section */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Link</span>
-          <div className="flex items-center gap-2">
-            <Volume2 className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">YouTube</span>
+          <div className="flex items-center gap-1.5">
+            <Volume2 className="w-3 h-3 text-muted-foreground" />
             <Slider
               value={linkVolume}
               onValueChange={setLinkVolume}
               max={100}
               step={1}
-              className="w-20"
+              className="w-16"
             />
           </div>
         </div>
-        <Input
-          type="text"
-          placeholder="https://youtu.be/..."
-          value={youtubeLink}
-          onChange={(e) => setYoutubeLink(e.target.value)}
-          className="text-sm bg-secondary border-0"
-        />
+        <div className="flex gap-1">
+          <Input
+            type="text"
+            placeholder="Paste YouTube link..."
+            value={youtubeLink}
+            onChange={(e) => setYoutubeLink(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleYoutubeLink()}
+            className="text-xs bg-secondary border-0 h-7 flex-1"
+          />
+          {youtubeId && (
+            <button
+              onClick={toggleYoutube}
+              className="p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              {isYoutubePlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+            </button>
+          )}
+        </div>
       </div>
 
+      {/* Hidden YouTube iframe for audio */}
+      {youtubeId && isYoutubePlaying && (
+        <iframe
+          ref={iframeRef}
+          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&enablejsapi=1&loop=1&playlist=${youtubeId}`}
+          allow="autoplay"
+          className="hidden"
+        />
+      )}
+
       {/* Ambient Section */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Ambient</span>
-          <div className="flex items-center gap-2">
-            <Volume2 className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Ambient</span>
+          <div className="flex items-center gap-1.5">
+            <Volume2 className="w-3 h-3 text-muted-foreground" />
             <Slider
               value={ambientVolume}
               onValueChange={setAmbientVolume}
               max={100}
               step={1}
-              className="w-20"
+              className="w-16"
             />
           </div>
         </div>
-        <div className="grid grid-cols-6 gap-1.5">
+        <div className="grid grid-cols-6 gap-1">
           {ambientSounds.map((sound) => {
             const Icon = sound.icon;
             const isActive = activeAmbient === sound.id;
@@ -102,14 +159,14 @@ const SoundWidget = () => {
               <button
                 key={sound.id}
                 onClick={() => setActiveAmbient(isActive ? null : sound.id)}
-                className={`p-2 rounded-full transition-all duration-200 ${
+                className={`p-1.5 rounded-full transition-all duration-200 ${
                   isActive 
                     ? "bg-primary text-primary-foreground shadow-sm" 
                     : "bg-secondary text-secondary-foreground hover:bg-muted"
                 }`}
                 title={sound.id.charAt(0).toUpperCase() + sound.id.slice(1)}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3 h-3" />
               </button>
             );
           })}
