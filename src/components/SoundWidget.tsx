@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from "react";
-import { Volume2, TreePine, CloudRain, Flame, Coffee, Waves, Sparkles, Play, Pause } from "lucide-react";
+import { Volume2, TreePine, CloudRainWind, FlameKindling, Coffee, Waves, Rocket, Play, Pause } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
+
 const ambientSounds = [
-  { id: "forest", icon: TreePine, audioUrl: "https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" },
-  { id: "space", icon: Sparkles, audioUrl: "https://assets.mixkit.co/active_storage/sfx/1234/1234-preview.mp3" },
-  { id: "rain", icon: CloudRain, audioUrl: "https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3" },
-  { id: "fire", icon: Flame, audioUrl: "https://assets.mixkit.co/active_storage/sfx/1188/1188-preview.mp3" },
-  { id: "waves", icon: Waves, audioUrl: "https://assets.mixkit.co/active_storage/sfx/2432/2432-preview.mp3" },
-  { id: "cafe", icon: Coffee, audioUrl: "https://assets.mixkit.co/active_storage/sfx/181/181-preview.mp3" },
+  { id: "forest", icon: TreePine, audioUrl: "https://assets.mixkit.co/active_storage/sfx/2464/2464-preview.mp3" },
+  { id: "space", icon: Rocket, audioUrl: "https://assets.mixkit.co/active_storage/sfx/2135/2135-preview.mp3" },
+  { id: "rain", icon: CloudRainWind, audioUrl: "https://moodist.mvze.net/sounds/rain/rain-on-leaves.mp3" },
+  { id: "fire", icon: FlameKindling, audioUrl: "https://moodist.mvze.net/sounds/nature/campfire.mp3" },
+  { id: "waves", icon: Waves, audioUrl: "https://moodist.mvze.net/sounds/nature/waves.mp3" },
+  { id: "cafe", icon: Coffee, audioUrl: "https://moodist.mvze.net/sounds/places/cafe.mp3" },
 ];
 
 const extractYouTubeId = (url: string): string | null => {
@@ -169,14 +170,14 @@ const SoundWidget = () => {
               <button
                 key={sound.id}
                 onClick={() => setActiveAmbient(isActive ? null : sound.id)}
-                className={`p-1.5 rounded-full transition-all duration-200 ${
+                className={`p-1.5 flex items-center justify-center rounded-full transition-all duration-200 ${
                   isActive 
                     ? "bg-primary text-primary-foreground shadow-sm" 
                     : "bg-secondary text-secondary-foreground hover:bg-muted"
                 }`}
                 title={sound.id.charAt(0).toUpperCase() + sound.id.slice(1)}
               >
-                <Icon className="w-3 h-3" />
+                <Icon className="w-4 h-4" />
               </button>
             );
           })}

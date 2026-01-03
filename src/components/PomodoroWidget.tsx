@@ -6,7 +6,7 @@ type TimerMode = "focus" | "short" | "long";
 const TIMER_DURATIONS: Record<TimerMode, number> = {
   focus: 30 * 60, // 30 minutes
   short: 5 * 60,  // 5 minutes
-  long: 15 * 60,  // 15 minutes
+  long: 10 * 60,  // 15 minutes
 };
 
 const PomodoroWidget = () => {
@@ -53,12 +53,12 @@ const PomodoroWidget = () => {
 
   const modes = [
     { id: "focus" as TimerMode, label: "Focus" },
-    { id: "short" as TimerMode, label: "Short" },
-    { id: "long" as TimerMode, label: "Long" },
+    { id: "short" as TimerMode, label: "Short break" },
+    { id: "long" as TimerMode, label: "Long break" },
   ];
 
   return (
-    <div className="widget p-5 w-72">
+    <div className="widget p-5 w-[324px]">
       {/* Mode Selector */}
       <div className="flex justify-center gap-2 mb-6">
         {modes.map((m) => (
@@ -79,7 +79,7 @@ const PomodoroWidget = () => {
       {/* Timer Display */}
       <div className="text-center mb-6">
         <div 
-          className={`text-7xl font-karla font-bold tracking-wider transition-colors ${
+          className={`text-6xl font-karla font-bold tracking-wider transition-colors ${
             isRunning ? "text-timer-active animate-pulse-soft" : "text-timer-display"
           }`}
         >
@@ -111,9 +111,9 @@ const PomodoroWidget = () => {
         >
           <RotateCcw className="w-4 h-4" />
         </button>
-        <button className="p-2.5 bg-secondary text-secondary-foreground rounded-full hover:bg-muted transition-colors">
+        {/* <button className="p-2.5 bg-secondary text-secondary-foreground rounded-full hover:bg-muted transition-colors">
           <Settings className="w-4 h-4" />
-        </button>
+        </button> */}
       </div>
     </div>
   );
