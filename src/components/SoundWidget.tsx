@@ -212,7 +212,7 @@ const SoundWidget = () => {
           {youtubeId && (
             <button
               onClick={toggleYoutube}
-              className="p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="p-2 rounded-2xl bg-red-500 text-primary-foreground hover:bg-red-500/80 transition-colors"
             >
               {isYoutubePlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
             </button>

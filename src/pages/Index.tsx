@@ -82,11 +82,11 @@ const Index = () => {
         />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col md:flex-row gap-2 mt-2">
+        <div className="flex flex-col md:flex-row gap-2 mt-2">
           {/* Left Column */}
-          <div className="flex flex-col justify-end h-full min-h-[calc(100vh-70px)]">
+          <div className="flex flex-col gap-2 justify-end h-full min-h-[calc(100vh-64px)]">
+            {visibleWidgets.sound && <SoundWidget />}
             <div className="flex flex-col gap-2 mt-auto">
-              {visibleWidgets.sound && <SoundWidget />}
               {visibleWidgets.notes && <NotesWidget />}
               <ClockCalendarWidget />
             </div>
