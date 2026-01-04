@@ -141,7 +141,8 @@
 
 @layer utilities {
   .bg-widget {
-    background-color: hsl(var(--widget-bg));
+    background-color: hsl(var(--widget-bg) / 0.82);
+    --tw-backdrop-blur: blur(4px);
   }
   
   .shadow-widget {
@@ -149,6 +150,6 @@
   }
   
   .border-widget-border {
-    border-color: hsl(var(--widget-border));
+    border-color: hsl(var(--widget-border) / 0.82);
   }
 }

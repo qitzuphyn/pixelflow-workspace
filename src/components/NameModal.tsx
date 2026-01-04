@@ -39,7 +39,7 @@ const NameModal = ({ onNameSet }: NameModalProps) => {
       <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-lg border-border/50">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-center">
-            Welcome to Gumdrop Space ✨
+            Welcome to Gumdrop!
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground">
             What should we call you?

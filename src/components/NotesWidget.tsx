@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const NotesWidget = () => {
   const [notes, setNotes] = useState(
-    "Do not forget to grab the package from the next home backyard"
+    ""
   );
 
   return (

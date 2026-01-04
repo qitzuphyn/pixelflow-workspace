@@ -157,13 +157,13 @@ const PomodoroWidget = ({ onTimerStateChange, externalStart, externalPause, onEx
 
   const modes = [
     { id: "focus" as TimerMode, label: "Focus" },
-    { id: "short" as TimerMode, label: "Short" },
-    { id: "long" as TimerMode, label: "Long" },
+    { id: "short" as TimerMode, label: "Short break" },
+    { id: "long" as TimerMode, label: "Long break" },
   ];
 
   return (
     <>
-      <div className="widget p-5 w-72">
+      <div className="widget p-5 w-[324px]">
         {/* Mode Selector */}
         <div className="flex justify-center gap-2 mb-6">
           {modes.map((m) => (
@@ -182,7 +182,7 @@ const PomodoroWidget = ({ onTimerStateChange, externalStart, externalPause, onEx
         </div>
 
         {/* Timer Display */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-5">
           <div 
             className={`text-7xl font-karla font-bold tracking-wider transition-colors ${
               isRunning ? "text-timer-active animate-pulse-soft" : "text-timer-display"

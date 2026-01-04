@@ -49,7 +49,7 @@ const ClockCalendarWidget = () => {
       {/* Mini Calendar */}
       {showCalendar && (
         <div className="mt-4">
-          <div className="grid grid-cols-7 gap-1 mb-2">
+          <div className="grid grid-cols-7 gap-1 mb-1.5">
             {weekDays.map((day) => (
               <div
                 key={day}
@@ -59,7 +59,7 @@ const ClockCalendarWidget = () => {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-[2px]">
             {days.map((day, index) => {
               const isToday = isSameDay(day, today);
               const isCurrentMonth = day.getMonth() === today.getMonth();

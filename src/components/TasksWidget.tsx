@@ -76,7 +76,7 @@ const TasksWidget = ({ onTaskStart, onTaskPause, activeTaskId, isTimerRunning }:
   const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   return (
-    <div className="widget p-3 w-72 min-h-56 flex flex-col">
+    <div className="widget p-3 w-[324px] min-h-56 flex flex-col">
       <h3 className="font-semibold text-foreground mb-2 text-sm">Tasks</h3>
       
       {/* Add Task Button/Input */}
@@ -178,7 +178,7 @@ const TasksWidget = ({ onTaskStart, onTaskPause, activeTaskId, isTimerRunning }:
       </div>
 
       {/* Progress Bar - Fixed at bottom */}
-      <div className="mt-auto pt-2 border-t border-border/50">
+      <div className="mt-auto pt-2 border-t border-gray-300">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] text-muted-foreground">Progress</span>
           <span className="text-[10px] text-muted-foreground">
