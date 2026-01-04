@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Calendar, Trash2 } from "lucide-react";
+import { Plus, Calendar, Trash2, Play } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -12,7 +12,11 @@ interface Task {
   date: Date;
 }
 
-const TasksWidget = () => {
+interface TasksWidgetProps {
+  onTaskStart?: () => void;
+}
+
+const TasksWidget = ({ onTaskStart }: TasksWidgetProps) => {
   const [tasks, setTasks] = useState<Task[]>([
     { id: "1", text: "Do a barrel roll", completed: false, date: new Date() },
   ]);
@@ -54,6 +58,10 @@ const TasksWidget = () => {
       setIsAdding(false);
       setNewTask("");
     }
+  };
+
+  const handleStartTask = () => {
+    onTaskStart?.();
   };
 
   const completedCount = tasks.filter((t) => t.completed).length;
@@ -114,6 +122,15 @@ const TasksWidget = () => {
                 <span>{format(task.date, "MMM d, h:mma")}</span>
               </div>
             </div>
+            {!task.completed && (
+              <button
+                onClick={handleStartTask}
+                className="p-1 rounded hover:bg-primary/20 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+                title="Start pomodoro for this task"
+              >
+                <Play className="w-3 h-3" />
+              </button>
+            )}
             {task.completed && (
               <button
                 onClick={() => deleteTask(task.id)}
