@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Calendar, Trash2, Play } from "lucide-react";
+import { Plus, Calendar, Trash2, Play, Pause } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -13,10 +13,13 @@ interface Task {
 }
 
 interface TasksWidgetProps {
-  onTaskStart?: () => void;
+  onTaskStart?: (taskId: string) => void;
+  onTaskPause?: (taskId: string) => void;
+  activeTaskId?: string | null;
+  isTimerRunning?: boolean;
 }
 
-const TasksWidget = ({ onTaskStart }: TasksWidgetProps) => {
+const TasksWidget = ({ onTaskStart, onTaskPause, activeTaskId, isTimerRunning }: TasksWidgetProps) => {
   const [tasks, setTasks] = useState<Task[]>([
     { id: "1", text: "Do a barrel roll", completed: false, date: new Date() },
   ]);
@@ -60,8 +63,12 @@ const TasksWidget = ({ onTaskStart }: TasksWidgetProps) => {
     }
   };
 
-  const handleStartTask = () => {
-    onTaskStart?.();
+  const handlePlayPause = (taskId: string) => {
+    if (activeTaskId === taskId && isTimerRunning) {
+      onTaskPause?.(taskId);
+    } else {
+      onTaskStart?.(taskId);
+    }
   };
 
   const completedCount = tasks.filter((t) => t.completed).length;
@@ -97,51 +104,77 @@ const TasksWidget = ({ onTaskStart }: TasksWidgetProps) => {
 
       {/* Task List */}
       <div className="space-y-1.5 max-h-36 overflow-y-auto flex-1">
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            className={`flex items-start gap-2 p-1.5 rounded-lg transition-opacity group ${
-              task.completed ? "opacity-50" : ""
-            }`}
-          >
-            <Checkbox
-              checked={task.completed}
-              onCheckedChange={() => toggleTask(task.id)}
-              className="mt-0.5"
-            />
-            <div className="flex-1 min-w-0">
-              <p
-                className={`text-xs ${
-                  task.completed ? "line-through text-muted-foreground" : "text-foreground"
-                }`}
-              >
-                {task.text}
-              </p>
-              <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
-                <Calendar className="w-2.5 h-2.5" />
-                <span>{format(task.date, "MMM d, h:mma")}</span>
+        {tasks.map((task) => {
+          const isActive = activeTaskId === task.id;
+          const isActiveAndRunning = isActive && isTimerRunning;
+          
+          return (
+            <div
+              key={task.id}
+              className={`flex items-start gap-2 p-1.5 rounded-lg transition-all group ${
+                task.completed 
+                  ? "opacity-50" 
+                  : isActive 
+                    ? "bg-primary/15 ring-1 ring-primary/30" 
+                    : ""
+              }`}
+            >
+              <Checkbox
+                checked={task.completed}
+                onCheckedChange={() => toggleTask(task.id)}
+                className="mt-0.5"
+              />
+              <div className="flex-1 min-w-0">
+                <p
+                  className={`text-xs ${
+                    task.completed 
+                      ? "line-through text-muted-foreground" 
+                      : isActive 
+                        ? "text-primary font-medium" 
+                        : "text-foreground"
+                  }`}
+                >
+                  {task.text}
+                </p>
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
+                  <Calendar className="w-2.5 h-2.5" />
+                  <span>{format(task.date, "MMM d, h:mma")}</span>
+                  {isActive && (
+                    <span className="ml-1 text-primary font-medium">
+                      • {isActiveAndRunning ? "In progress" : "Paused"}
+                    </span>
+                  )}
+                </div>
               </div>
+              {!task.completed && (
+                <button
+                  onClick={() => handlePlayPause(task.id)}
+                  className={`p-1 rounded transition-colors ${
+                    isActive 
+                      ? "bg-primary/20 text-primary opacity-100" 
+                      : "hover:bg-primary/20 text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100"
+                  }`}
+                  title={isActiveAndRunning ? "Pause task" : "Start pomodoro for this task"}
+                >
+                  {isActiveAndRunning ? (
+                    <Pause className="w-3 h-3" />
+                  ) : (
+                    <Play className="w-3 h-3" />
+                  )}
+                </button>
+              )}
+              {task.completed && (
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className="p-1 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                  title="Delete task"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              )}
             </div>
-            {!task.completed && (
-              <button
-                onClick={handleStartTask}
-                className="p-1 rounded hover:bg-primary/20 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
-                title="Start pomodoro for this task"
-              >
-                <Play className="w-3 h-3" />
-              </button>
-            )}
-            {task.completed && (
-              <button
-                onClick={() => deleteTask(task.id)}
-                className="p-1 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                title="Delete task"
-              >
-                <Trash2 className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Progress Bar - Fixed at bottom */}
