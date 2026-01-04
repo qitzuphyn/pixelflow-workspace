@@ -23,6 +23,7 @@ const Index = () => {
   });
   const [currentBg, setCurrentBg] = useState(0);
   const [userName, setUserName] = useState("");
+  const [startPomodoro, setStartPomodoro] = useState(false);
 
   const handleToggleWidget = (widget: keyof typeof visibleWidgets) => {
     setVisibleWidgets((prev) => ({
@@ -33,6 +34,14 @@ const Index = () => {
 
   const handleNameSet = useCallback((name: string) => {
     setUserName(name);
+  }, []);
+
+  const handleTaskStart = useCallback(() => {
+    setStartPomodoro(true);
+  }, []);
+
+  const handlePomodoroStartHandled = useCallback(() => {
+    setStartPomodoro(false);
   }, []);
 
   return (
@@ -71,8 +80,13 @@ const Index = () => {
 
           {/* Right Column */}
           <div className="flex flex-col gap-2 items-end justify-end min-h-[calc(100vh-70px)]">
-            {visibleWidgets.tasks && <TasksWidget />}
-            {visibleWidgets.timer && <PomodoroWidget />}
+            {visibleWidgets.tasks && <TasksWidget onTaskStart={handleTaskStart} />}
+            {visibleWidgets.timer && (
+              <PomodoroWidget 
+                externalStart={startPomodoro} 
+                onExternalStartHandled={handlePomodoroStartHandled}
+              />
+            )}
           </div>
         </div>
       </div>
