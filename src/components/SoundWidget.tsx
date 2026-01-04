@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Volume2, TreePine, CloudRain, Flame, Coffee, Waves, Sparkles, Play, Pause } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 
 const ambientSounds = [
   { id: "forest", icon: TreePine, audioUrl: "https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" },
@@ -31,29 +32,104 @@ const SoundWidget = () => {
   const [youtubeId, setYoutubeId] = useState<string | null>(null);
   const [isYoutubePlaying, setIsYoutubePlaying] = useState(false);
   const [activeAmbient, setActiveAmbient] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const playerRef = useRef<any>(null);
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   const handleYoutubeLink = () => {
     const id = extractYouTubeId(youtubeLink);
     if (id) {
       setYoutubeId(id);
       setIsYoutubePlaying(true);
+      setCurrentTime(0);
+      setDuration(0);
     }
   };
 
   const toggleYoutube = () => {
-    if (youtubeId) {
-      setIsYoutubePlaying(!isYoutubePlaying);
-      if (iframeRef.current?.contentWindow) {
-        const command = isYoutubePlaying ? "pauseVideo" : "playVideo";
-        iframeRef.current.contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: command }),
-          "*"
-        );
+    if (youtubeId && playerRef.current) {
+      if (isYoutubePlaying) {
+        playerRef.current.pauseVideo();
+      } else {
+        playerRef.current.playVideo();
       }
+      setIsYoutubePlaying(!isYoutubePlaying);
     }
   };
+
+  // Initialize YouTube Player API
+  useEffect(() => {
+    if (!youtubeId) return;
+
+    // Load YouTube IFrame API
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    }
+
+    const initPlayer = () => {
+      playerRef.current = new window.YT.Player("youtube-player", {
+        height: "0",
+        width: "0",
+        videoId: youtubeId,
+        playerVars: {
+          autoplay: 1,
+          loop: 1,
+          playlist: youtubeId,
+        },
+        events: {
+          onReady: (event: any) => {
+            event.target.setVolume(linkVolume[0]);
+            setDuration(event.target.getDuration());
+          },
+          onStateChange: (event: any) => {
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              setIsYoutubePlaying(true);
+              // Start tracking progress
+              progressInterval.current = setInterval(() => {
+                if (playerRef.current) {
+                  setCurrentTime(playerRef.current.getCurrentTime());
+                  setDuration(playerRef.current.getDuration());
+                }
+              }, 1000);
+            } else {
+              setIsYoutubePlaying(false);
+              if (progressInterval.current) {
+                clearInterval(progressInterval.current);
+              }
+            }
+          },
+        },
+      });
+    };
+
+    if (window.YT && window.YT.Player) {
+      initPlayer();
+    } else {
+      window.onYouTubeIframeAPIReady = initPlayer;
+    }
+
+    return () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+      if (playerRef.current) {
+        playerRef.current.destroy();
+        playerRef.current = null;
+      }
+    };
+  }, [youtubeId]);
+
+  // Update volume
+  useEffect(() => {
+    if (playerRef.current && playerRef.current.setVolume) {
+      playerRef.current.setVolume(linkVolume[0]);
+    }
+  }, [linkVolume]);
 
   useEffect(() => {
     if (activeAmbient) {
@@ -87,15 +163,23 @@ const SoundWidget = () => {
     }
   }, [ambientVolume]);
 
-  // Update YouTube volume when slider changes
-  useEffect(() => {
-    if (iframeRef.current?.contentWindow && youtubeId) {
-      iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "setVolume", args: [linkVolume[0]] }),
-        "*"
-      );
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (playerRef.current && duration > 0) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const newTime = (clickX / rect.width) * duration;
+      playerRef.current.seekTo(newTime, true);
+      setCurrentTime(newTime);
     }
-  }, [linkVolume, youtubeId]);
+  };
 
   return (
     <div className="widget p-3 w-64 space-y-3">
@@ -134,17 +218,29 @@ const SoundWidget = () => {
             </button>
           )}
         </div>
+        
+        {/* Progress Bar */}
+        {youtubeId && (
+          <div className="space-y-1">
+            <div 
+              className="h-1.5 bg-secondary rounded-full cursor-pointer overflow-hidden"
+              onClick={handleProgressClick}
+            >
+              <div 
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] text-muted-foreground">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Hidden YouTube iframe for audio */}
-      {youtubeId && isYoutubePlaying && (
-        <iframe
-          ref={iframeRef}
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&enablejsapi=1&loop=1&playlist=${youtubeId}&origin=${window.location.origin}`}
-          allow="autoplay"
-          className="hidden"
-        />
-      )}
+      {/* Hidden YouTube player container */}
+      <div id="youtube-player" className="hidden" />
 
       {/* Ambient Section */}
       <div className="space-y-2">
@@ -185,5 +281,13 @@ const SoundWidget = () => {
     </div>
   );
 };
+
+// Add YT type declaration
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 export default SoundWidget;

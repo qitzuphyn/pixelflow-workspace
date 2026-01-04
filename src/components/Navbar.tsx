@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain } from "lucide-react";
+import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain, Share2, Check } from "lucide-react";
+import { toast } from "sonner";
 
 interface NavbarProps {
   visibleWidgets: {
@@ -9,6 +10,7 @@ interface NavbarProps {
     sound: boolean;
   };
   onToggleWidget: (widget: keyof NavbarProps["visibleWidgets"]) => void;
+  userName: string;
 }
 
 interface WeatherData {
@@ -17,11 +19,11 @@ interface WeatherData {
   city: string;
 }
 
-const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
+const Navbar = ({ visibleWidgets, onToggleWidget, userName }: NavbarProps) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Get user's location and fetch weather
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -32,7 +34,6 @@ const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
             );
             const data = await response.json();
             
-            // Get city name from reverse geocoding
             const geoResponse = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
             );
@@ -54,12 +55,22 @@ const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
           }
         },
         () => {
-          // Fallback if geolocation denied
           setWeather({ temp: 20, condition: "Clear", city: "Your City" });
         }
       );
     }
   }, []);
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText("gumdrop-space.netlify.app");
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy link");
+    }
+  };
 
   const getWeatherIcon = () => {
     if (!weather) return Cloud;
@@ -129,12 +140,18 @@ const Navbar = ({ visibleWidgets, onToggleWidget }: NavbarProps) => {
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1.5">
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-primary-foreground font-medium text-xs">A</span>
+            <span className="text-primary-foreground font-medium text-xs">
+              {userName ? userName.charAt(0).toUpperCase() : "?"}
+            </span>
           </div>
-          <span className="text-xs text-foreground">Anirban's Room</span>
+          <span className="text-xs text-foreground">{userName ? `${userName}'s Room` : "My Room"}</span>
         </div>
-        <button className="px-2 py-1 bg-primary text-primary-foreground rounded-md text-xs font-medium hover:bg-primary/90 transition-colors">
-          Links
+        <button 
+          onClick={handleShare}
+          className="px-2 py-1 bg-primary text-primary-foreground rounded-md text-xs font-medium hover:bg-primary/90 transition-colors flex items-center gap-1"
+        >
+          {copied ? <Check className="w-3 h-3" /> : <Share2 className="w-3 h-3" />}
+          {copied ? "Copied!" : "Share"}
         </button>
       </div>
     </nav>
