@@ -23,7 +23,10 @@ const Index = () => {
   });
   const [currentBg, setCurrentBg] = useState(0);
   const [userName, setUserName] = useState("");
-  const [startPomodoro, setStartPomodoro] = useState(false);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [triggerStart, setTriggerStart] = useState(false);
+  const [triggerPause, setTriggerPause] = useState(false);
 
   const handleToggleWidget = (widget: keyof typeof visibleWidgets) => {
     setVisibleWidgets((prev) => ({
@@ -36,12 +39,25 @@ const Index = () => {
     setUserName(name);
   }, []);
 
-  const handleTaskStart = useCallback(() => {
-    setStartPomodoro(true);
+  const handleTaskStart = useCallback((taskId: string) => {
+    setActiveTaskId(taskId);
+    setTriggerStart(true);
   }, []);
 
-  const handlePomodoroStartHandled = useCallback(() => {
-    setStartPomodoro(false);
+  const handleTaskPause = useCallback((_taskId: string) => {
+    setTriggerPause(true);
+  }, []);
+
+  const handleStartHandled = useCallback(() => {
+    setTriggerStart(false);
+  }, []);
+
+  const handlePauseHandled = useCallback(() => {
+    setTriggerPause(false);
+  }, []);
+
+  const handleTimerStateChange = useCallback((running: boolean) => {
+    setIsTimerRunning(running);
   }, []);
 
   return (
@@ -80,11 +96,21 @@ const Index = () => {
 
           {/* Right Column */}
           <div className="flex flex-col gap-2 items-end justify-end min-h-[calc(100vh-70px)]">
-            {visibleWidgets.tasks && <TasksWidget onTaskStart={handleTaskStart} />}
+            {visibleWidgets.tasks && (
+              <TasksWidget 
+                onTaskStart={handleTaskStart}
+                onTaskPause={handleTaskPause}
+                activeTaskId={activeTaskId}
+                isTimerRunning={isTimerRunning}
+              />
+            )}
             {visibleWidgets.timer && (
               <PomodoroWidget 
-                externalStart={startPomodoro} 
-                onExternalStartHandled={handlePomodoroStartHandled}
+                externalStart={triggerStart} 
+                externalPause={triggerPause}
+                onExternalStartHandled={handleStartHandled}
+                onExternalPauseHandled={handlePauseHandled}
+                onTimerStateChange={handleTimerStateChange}
               />
             )}
           </div>

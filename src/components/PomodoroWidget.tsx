@@ -29,9 +29,11 @@ interface PomodoroSettings {
 }
 
 interface PomodoroWidgetProps {
-  onTimerStart?: () => void;
+  onTimerStateChange?: (isRunning: boolean) => void;
   externalStart?: boolean;
+  externalPause?: boolean;
   onExternalStartHandled?: () => void;
+  onExternalPauseHandled?: () => void;
 }
 
 const DEFAULT_DURATIONS: PomodoroSettings = {
@@ -40,7 +42,7 @@ const DEFAULT_DURATIONS: PomodoroSettings = {
   long: 10,
 };
 
-const PomodoroWidget = ({ onTimerStart, externalStart, onExternalStartHandled }: PomodoroWidgetProps) => {
+const PomodoroWidget = ({ onTimerStateChange, externalStart, externalPause, onExternalStartHandled, onExternalPauseHandled }: PomodoroWidgetProps) => {
   const [durations, setDurations] = useState<PomodoroSettings>(() => {
     const saved = localStorage.getItem("pomodoro-settings");
     return saved ? JSON.parse(saved) : DEFAULT_DURATIONS;
@@ -64,19 +66,20 @@ const PomodoroWidget = ({ onTimerStart, externalStart, onExternalStartHandled }:
     setMode(newMode);
     setTimeLeft(durations[newMode] * 60);
     setIsRunning(false);
+    onTimerStateChange?.(false);
   };
 
   const toggleTimer = () => {
-    if (!isRunning) {
-      onTimerStart?.();
-    }
-    setIsRunning(!isRunning);
+    const newRunningState = !isRunning;
+    setIsRunning(newRunningState);
+    onTimerStateChange?.(newRunningState);
   };
 
   const resetTimer = useCallback(() => {
     setTimeLeft(durations[mode] * 60);
     setIsRunning(false);
-  }, [mode, durations]);
+    onTimerStateChange?.(false);
+  }, [mode, durations, onTimerStateChange]);
 
   const startNextSession = useCallback(() => {
     if (mode === "focus") {
@@ -109,9 +112,19 @@ const PomodoroWidget = ({ onTimerStart, externalStart, onExternalStartHandled }:
       setMode("focus");
       setTimeLeft(durations.focus * 60);
       setIsRunning(true);
+      onTimerStateChange?.(true);
       onExternalStartHandled?.();
     }
-  }, [externalStart, durations.focus, onExternalStartHandled]);
+  }, [externalStart, durations.focus, onExternalStartHandled, onTimerStateChange]);
+
+  // Handle external pause from task
+  useEffect(() => {
+    if (externalPause) {
+      setIsRunning(false);
+      onTimerStateChange?.(false);
+      onExternalPauseHandled?.();
+    }
+  }, [externalPause, onExternalPauseHandled, onTimerStateChange]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
