@@ -14,6 +14,7 @@ interface NavbarProps {
   };
   onToggleWidget: (widget: keyof NavbarProps["visibleWidgets"]) => void;
   userName: string;
+  onStoryClick: () => void;
 }
 
 interface WeatherData {
@@ -22,7 +23,7 @@ interface WeatherData {
   city: string;
 }
 
-const Navbar = ({ visibleWidgets, onToggleWidget, userName }: NavbarProps) => {
+const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick }: NavbarProps) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -139,8 +140,14 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName }: NavbarProps) => {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* About Button */}
-        <img src={about} alt="About" className="w-6 h-6" />
+        {/* Story Button */}
+        <button
+          onClick={onStoryClick}
+          className="p-1.5 rounded-md text-muted-foreground hover:rotate-90 transition-transform"
+          title="Hear me out!"
+        >
+          <img src={about} alt="About" className="w-6 h-6" />
+        </button>
         <button
           className="pr-3 pl-2 h-[37.6px] bg-[#FFDD00] text-foreground rounded-md text-sm font-bold hover:bg-[#FFDD00]/90 transition-colors flex items-center gap-1"
           onClick={() => window.open("https://buymeacoffee.com/do3e6rqpp", "_blank")}

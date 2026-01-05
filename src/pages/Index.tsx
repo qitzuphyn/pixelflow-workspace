@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SoundWidget from "@/components/SoundWidget";
 import NotesWidget from "@/components/NotesWidget";
@@ -7,6 +7,7 @@ import ClockCalendarWidget from "@/components/ClockCalendarWidget";
 import PomodoroWidget from "@/components/PomodoroWidget";
 import BackgroundSwitcher from "@/components/BackgroundSwitcher";
 import NameModal from "@/components/NameModal";
+import StoryModal from "@/components/StoryModal";
 import pixelBg1 from "@/assets/pixel-bg-1.gif";
 import pixelBg2 from "@/assets/pixel-bg-2.gif";
 import pixelBg3 from "@/assets/pixel-bg-3.gif";
@@ -28,6 +29,7 @@ const Index = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [triggerStart, setTriggerStart] = useState(false);
   const [triggerPause, setTriggerPause] = useState(false);
+  const [showStory, setShowStory] = useState(false);
 
   const handleToggleWidget = (widget: keyof typeof visibleWidgets) => {
     setVisibleWidgets((prev) => ({
@@ -61,6 +63,25 @@ const Index = () => {
     setIsTimerRunning(running);
   }, []);
 
+  // Keyboard navigation for background switching
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input/textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      if (e.key === "ArrowLeft") {
+        setCurrentBg((prev) => (prev === 0 ? backgrounds.length - 1 : prev - 1));
+      } else if (e.key === "ArrowRight") {
+        setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
@@ -79,6 +100,7 @@ const Index = () => {
           visibleWidgets={visibleWidgets} 
           onToggleWidget={handleToggleWidget} 
           userName={userName}
+          onStoryClick={() => setShowStory(true)}
         />
 
         {/* Main Content Area */}
@@ -123,6 +145,12 @@ const Index = () => {
         currentBg={currentBg} 
         onChangeBg={setCurrentBg} 
         totalBgs={backgrounds.length} 
+      />
+
+      {/* Story Modal */}
+      <StoryModal 
+        isOpen={showStory} 
+        onClose={() => setShowStory(false)} 
       />
     </div>
   );
