@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SoundWidget from "@/components/SoundWidget";
 import NotesWidget from "@/components/NotesWidget";
@@ -62,6 +62,25 @@ const Index = () => {
 
   const handleTimerStateChange = useCallback((running: boolean) => {
     setIsTimerRunning(running);
+  }, []);
+
+  // Keyboard navigation for background switching
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input/textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      if (e.key === "ArrowLeft") {
+        setCurrentBg((prev) => (prev === 0 ? backgrounds.length - 1 : prev - 1));
+      } else if (e.key === "ArrowRight") {
+        setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
