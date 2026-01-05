@@ -1,12 +1,13 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Wind } from "lucide-react";
 
 interface BackgroundSwitcherProps {
   currentBg: number;
   onChangeBg: (index: number) => void;
   totalBgs: number;
+  onBreathingClick: () => void;
 }
 
-const BackgroundSwitcher = ({ currentBg, onChangeBg, totalBgs }: BackgroundSwitcherProps) => {
+const BackgroundSwitcher = ({ currentBg, onChangeBg, totalBgs, onBreathingClick }: BackgroundSwitcherProps) => {
   const handlePrev = () => {
     onChangeBg(currentBg === 0 ? totalBgs - 1 : currentBg - 1);
   };
@@ -44,6 +45,19 @@ const BackgroundSwitcher = ({ currentBg, onChangeBg, totalBgs }: BackgroundSwitc
           className="p-1.5 rounded-lg bg-background/50 text-foreground hover:bg-background/70 transition-colors"
         >
           <ChevronRight className="w-4 h-4" />
+        </button>
+
+        {/* Separator */}
+        <div className="w-px h-4 bg-border/50" />
+
+        {/* Breathing Exercise Button */}
+        <button
+          onClick={onBreathingClick}
+          className="p-1.5 rounded-lg bg-background/50 text-foreground hover:bg-background/70 transition-colors flex items-center gap-1.5"
+          title="Breathing Exercise"
+        >
+          <Wind className="w-4 h-4" />
+          <span className="text-xs">Breathe</span>
         </button>
       </div>
     </div>

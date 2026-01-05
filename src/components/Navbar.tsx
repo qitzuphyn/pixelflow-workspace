@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain, Share2, Check } from "lucide-react";
+import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain, Share2, Check, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 
 interface NavbarProps {
@@ -11,6 +11,7 @@ interface NavbarProps {
   };
   onToggleWidget: (widget: keyof NavbarProps["visibleWidgets"]) => void;
   userName: string;
+  onStoryClick: () => void;
 }
 
 interface WeatherData {
@@ -19,7 +20,7 @@ interface WeatherData {
   city: string;
 }
 
-const Navbar = ({ visibleWidgets, onToggleWidget, userName }: NavbarProps) => {
+const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick }: NavbarProps) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -138,6 +139,15 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName }: NavbarProps) => {
 
       {/* Right Side - User Section */}
       <div className="flex items-center gap-2">
+        {/* Story Button */}
+        <button
+          onClick={onStoryClick}
+          className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+          title="Our Story"
+        >
+          <BookOpen className="w-4 h-4" />
+        </button>
+
         <div className="flex items-center gap-1.5">
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
             <span className="text-primary-foreground font-medium text-xs">
