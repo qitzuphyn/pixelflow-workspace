@@ -64,7 +64,7 @@ const Index = () => {
     setIsTimerRunning(running);
   }, []);
 
-  // Keyboard navigation for background switching
+  // Keyboard navigation for background switching and spacebar for pomodoro
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger if user is typing in an input/textarea
@@ -76,12 +76,17 @@ const Index = () => {
         setCurrentBg((prev) => (prev === 0 ? backgrounds.length - 1 : prev - 1));
       } else if (e.key === "ArrowRight") {
         setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+      } else if (e.key === " ") {
+        e.preventDefault();
+        setIsTimerRunning((prev) => !prev);
+        setTriggerStart((prev) => !isTimerRunning && !prev);
+        setTriggerPause((prev) => isTimerRunning && !prev);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isTimerRunning]);
 
   return (
     <div 
