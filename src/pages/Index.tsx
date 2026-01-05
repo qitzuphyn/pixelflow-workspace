@@ -18,7 +18,7 @@ const backgrounds = [pixelBg1, pixelBg2, pixelBg3, pixelBg4, pixelBg5];
 
 const Index = () => {
   const [visibleWidgets, setVisibleWidgets] = useState({
-    notes: true,
+    notes: false,
     tasks: true,
     timer: true,
     sound: true,
@@ -75,12 +75,17 @@ const Index = () => {
         setCurrentBg((prev) => (prev === 0 ? backgrounds.length - 1 : prev - 1));
       } else if (e.key === "ArrowRight") {
         setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+      } else if (e.key === " ") {
+        e.preventDefault();
+        setIsTimerRunning((prev) => !prev);
+        setTriggerStart((prev) => !isTimerRunning && !prev);
+        setTriggerPause((prev) => isTimerRunning && !prev);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isTimerRunning]);
 
   return (
     <div 
