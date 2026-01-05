@@ -7,6 +7,8 @@ import ClockCalendarWidget from "@/components/ClockCalendarWidget";
 import PomodoroWidget from "@/components/PomodoroWidget";
 import BackgroundSwitcher from "@/components/BackgroundSwitcher";
 import NameModal from "@/components/NameModal";
+import BreathingExercise from "@/components/BreathingExercise";
+import StoryModal from "@/components/StoryModal";
 import pixelBg1 from "@/assets/pixel-bg-1.gif";
 import pixelBg2 from "@/assets/pixel-bg-2.gif";
 import pixelBg3 from "@/assets/pixel-bg-3.gif";
@@ -27,6 +29,8 @@ const Index = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [triggerStart, setTriggerStart] = useState(false);
   const [triggerPause, setTriggerPause] = useState(false);
+  const [showBreathing, setShowBreathing] = useState(false);
+  const [showStory, setShowStory] = useState(false);
 
   const handleToggleWidget = (widget: keyof typeof visibleWidgets) => {
     setVisibleWidgets((prev) => ({
@@ -78,6 +82,7 @@ const Index = () => {
           visibleWidgets={visibleWidgets} 
           onToggleWidget={handleToggleWidget} 
           userName={userName}
+          onStoryClick={() => setShowStory(true)}
         />
 
         {/* Main Content Area */}
@@ -121,7 +126,20 @@ const Index = () => {
       <BackgroundSwitcher 
         currentBg={currentBg} 
         onChangeBg={setCurrentBg} 
-        totalBgs={backgrounds.length} 
+        totalBgs={backgrounds.length}
+        onBreathingClick={() => setShowBreathing(true)}
+      />
+
+      {/* Breathing Exercise Overlay */}
+      <BreathingExercise 
+        isOpen={showBreathing} 
+        onClose={() => setShowBreathing(false)} 
+      />
+
+      {/* Story Modal */}
+      <StoryModal 
+        isOpen={showStory} 
+        onClose={() => setShowStory(false)} 
       />
     </div>
   );
