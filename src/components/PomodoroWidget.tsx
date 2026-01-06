@@ -20,6 +20,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
+// Create notification sound using Web Audio API
+const playNotificationSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Create a pleasant chime sound
+    const playTone = (frequency: number, startTime: number, duration: number) => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + startTime + duration);
+      
+      oscillator.start(audioContext.currentTime + startTime);
+      oscillator.stop(audioContext.currentTime + startTime + duration);
+    };
+    
+    // Play a pleasant three-note chime
+    playTone(523.25, 0, 0.2);    // C5
+    playTone(659.25, 0.15, 0.2); // E5
+    playTone(783.99, 0.3, 0.3);  // G5
+  } catch (error) {
+    console.log('Audio not available');
+  }
+};
+
 type TimerMode = "focus" | "short" | "long";
 
 interface PomodoroSettings {
@@ -82,6 +114,9 @@ const PomodoroWidget = ({ onTimerStateChange, externalStart, externalPause, onEx
   }, [mode, durations, onTimerStateChange]);
 
   const startNextSession = useCallback(() => {
+    // Play notification sound when session completes
+    playNotificationSound();
+
     if (mode === "focus") {
       const newFocusCount = focusCount + 1;
       setFocusCount(newFocusCount);

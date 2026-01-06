@@ -8,6 +8,7 @@ import PomodoroWidget from "@/components/PomodoroWidget";
 import BackgroundSwitcher from "@/components/BackgroundSwitcher";
 import NameModal from "@/components/NameModal";
 import StoryModal from "@/components/StoryModal";
+import BreathingExercise from "@/components/BreathingExercise";
 import pixelBg1 from "@/assets/pixel-bg-1.gif";
 import pixelBg2 from "@/assets/pixel-bg-2.gif";
 import pixelBg3 from "@/assets/pixel-bg-3.gif";
@@ -29,6 +30,7 @@ const Index = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [triggerStart, setTriggerStart] = useState(false);
   const [triggerPause, setTriggerPause] = useState(false);
+  const [showBreathing, setShowBreathing] = useState(false);
   const [showStory, setShowStory] = useState(false);
 
   const handleToggleWidget = (widget: keyof typeof visibleWidgets) => {
@@ -150,6 +152,13 @@ const Index = () => {
         currentBg={currentBg} 
         onChangeBg={setCurrentBg} 
         totalBgs={backgrounds.length} 
+        onBreathingClick={() => setShowBreathing(true)}
+      />
+
+      {/* Breathing Exercise Overlay */}
+      <BreathingExercise 
+        isOpen={showBreathing} 
+        onClose={() => setShowBreathing(false)} 
       />
 
       {/* Story Modal */}
