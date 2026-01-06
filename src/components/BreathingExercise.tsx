@@ -92,6 +92,11 @@ const BreathingExercise = ({ isOpen, onClose }: BreathingExerciseProps) => {
     };
   }, [isOpen]);
 
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   const getPhaseText = () => {
@@ -101,36 +106,38 @@ const BreathingExercise = ({ isOpen, onClose }: BreathingExerciseProps) => {
   };
 
   return (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-15 flex flex-col items-center gap-6 pointer-events-none">
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-6">
       {/* Close button */}
       <button
-        onClick={onClose}
-        className="absolute -top-16 right-0 p-2 rounded-full bg-background/30 backdrop-blur-md border border-border/30 text-foreground hover:bg-background/50 transition-colors pointer-events-auto"
+        onClick={handleClose}
+        className="absolute -top-16 right-0 p-2 rounded-full bg-background/30 backdrop-blur-md border border-border/30 text-foreground hover:bg-background/50 transition-colors z-20"
       >
         <X className="w-5 h-5" />
       </button>
 
       {/* Breathing circle */}
-      <div className="relative flex items-center justify-center">
-        {/* Outer glow ring */}
+      <div className="relative flex items-center justify-center w-64 h-64">
+        {/* Outer glow ring - animates */}
         <div 
-          className="absolute w-64 h-64 rounded-full bg-primary/20 blur-xl"
+          className="absolute w-64 h-64 rounded-full bg-primary/20 blur-xl transition-transform duration-100"
           style={{ transform: `scale(${circleScale})` }}
         />
         
-        {/* Main circle */}
+        {/* Main circle - animates */}
         <div 
-          className="w-48 h-48 rounded-full bg-background/30 backdrop-blur-md border border-border/30 shadow-2xl flex flex-col items-center justify-center"
+          className="absolute w-48 h-48 rounded-full bg-background/30 backdrop-blur-md border border-border/30 shadow-2xl transition-transform duration-100"
           style={{ transform: `scale(${circleScale})` }}
         >
           {/* Inner gradient */}
           <div className="absolute inset-4 rounded-full bg-gradient-to-br from-primary/30 to-transparent" />
-          
-          {/* Text */}
-          <span className="relative text-2xl font-light text-foreground tracking-wider">
+        </div>
+        
+        {/* Text container - stays fixed */}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <span className="text-2xl font-light text-foreground tracking-wider">
             {getPhaseText()}
           </span>
-          <span className="relative text-5xl font-bold text-foreground mt-2">
+          <span className="text-5xl font-bold text-foreground mt-2">
             {count}
           </span>
         </div>
