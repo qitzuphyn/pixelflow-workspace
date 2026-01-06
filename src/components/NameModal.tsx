@@ -11,35 +11,59 @@ import { Button } from "@/components/ui/button";
 
 interface NameModalProps {
   onNameSet: (name: string) => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-const NameModal = ({ onNameSet }: NameModalProps) => {
-  const [open, setOpen] = useState(false);
+const NameModal = ({ onNameSet, isOpen: externalOpen, onClose }: NameModalProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [name, setName] = useState("");
+
+  const isControlled = externalOpen !== undefined;
+  const open = isControlled ? externalOpen : internalOpen;
 
   useEffect(() => {
     const storedName = localStorage.getItem("gumdrop-username");
     if (!storedName) {
-      setOpen(true);
+      setInternalOpen(true);
     } else {
       onNameSet(storedName);
     }
   }, [onNameSet]);
 
+  useEffect(() => {
+    if (open) {
+      const storedName = localStorage.getItem("gumdrop-username");
+      if (storedName) {
+        setName(storedName);
+      }
+    }
+  }, [open]);
+
   const handleSubmit = () => {
     if (name.trim()) {
       localStorage.setItem("gumdrop-username", name.trim());
       onNameSet(name.trim());
-      setOpen(false);
+      if (isControlled && onClose) {
+        onClose();
+      } else {
+        setInternalOpen(false);
+      }
+    }
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen && isControlled && onClose) {
+      onClose();
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-lg border-border/50">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-center">
-            Welcome to Gumdrop Space ✨
+            {isControlled ? "Change Your Name" : "Welcome to Gumdrop Space ✨"}
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground">
             What should we call you?
@@ -60,7 +84,7 @@ const NameModal = ({ onNameSet }: NameModalProps) => {
             disabled={!name.trim()}
             className="w-full"
           >
-            Enter My Space
+            {isControlled ? "Save Name" : "Enter My Space"}
           </Button>
         </div>
       </DialogContent>
