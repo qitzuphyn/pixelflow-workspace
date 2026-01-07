@@ -48,9 +48,10 @@ export default defineConfig(({ mode }) => ({
           }
         ]
       },
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,gif}"]
-      }
+    workbox: {
+      globPatterns: ["**/*.{js,css,html,ico,png,svg,gif}"],
+      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5MB limit for large GIFs
+    }
     })
   ].filter(Boolean),
   resolve: {
