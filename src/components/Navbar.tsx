@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
-import { FileText, ListTodo, Timer, Volume2, Cloud, Sun, CloudRain, ExternalLink, Check } from "lucide-react";
+import { FileText, ListTodo, Timer, Volume2, Cloud, Sun, CloudRain, ExternalLink, Check, ChevronDown, User } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import logo from "/src/assets/logo.svg";
 import bmac from "/src/assets/bmac logo.png";
 import about from "/src/assets/sparkles.svg";
@@ -15,6 +21,7 @@ interface NavbarProps {
   onToggleWidget: (widget: keyof NavbarProps["visibleWidgets"]) => void;
   userName: string;
   onStoryClick: () => void;
+  onNameChange: () => void;
 }
 
 interface WeatherData {
@@ -23,9 +30,10 @@ interface WeatherData {
   city: string;
 }
 
-const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick }: NavbarProps) => {
+const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onNameChange }: NavbarProps) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [copied, setCopied] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -158,14 +166,30 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick }: Navb
 
         {/* Right Side - User Section */}
         <div className="widget flex items-center gap-2.5 px-2.5 py-1.5">
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-medium text-xs">
-                {userName ? userName.charAt(0).toUpperCase() : "?"}
-              </span>
-            </div>
-            <span className="text-xs text-foreground">{userName ? `${userName}'s Room` : "My Room"}</span>
-          </div>
+          {/* User Name Dropdown */}
+        <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-secondary transition-colors">
+              <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-primary-foreground font-medium text-xs">
+                  {userName ? userName.charAt(0).toUpperCase() : "?"}
+                </span>
+              </div>
+              <span className="text-xs text-foreground">{userName ? `${userName}'s Room` : "My Room"}</span>
+              <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={onNameChange} className="cursor-pointer">
+              <User className="w-4 h-4 mr-2" />
+              Change Name
+            </DropdownMenuItem>
+            {/* <DropdownMenuItem onClick={handleInstall} className="cursor-pointer">
+              <Download className="w-4 h-4 mr-2" />
+              {isInstalled ? "Already Installed" : "Install App"}
+            </DropdownMenuItem> */}
+          </DropdownMenuContent>
+        </DropdownMenu>
           {/* Separator */}
           <div className="w-px h-4 bg-gray-400" />
           <button 

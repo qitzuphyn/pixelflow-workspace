@@ -1,46 +1,47 @@
-# Welcome to your Lovable project
+# Gumdrop
 
-## Project info
+Gumdrop is a **zen browser-based focus room** that combines ambient visuals and sounds to help you get into deep work, study, or writing mode.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## ✨ Features
 
-## How can I edit this code?
+- Ambient “focus space” with calming visuals and soundscape controls for different moods (study, writing, deep work).
+- Simple, distraction-free interface designed for quick “open and focus” sessions.
+- Notes and Task tracking with pomodoro style timer support
+- PWA support: installable on desktop via browser, with offline access to core UI.
+- Runs entirely in the browser; no account or backend required.
 
-There are several ways of editing your application.
+## 🚀 Getting started
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Node.js (if you use a bundler or dev server).
+- A simple static HTTP server for local testing (e.g. `npm install -g serve`).
 
-Changes made via Lovable will be committed automatically to this repo.
+### Local development
 
-**Use your preferred IDE**
+```bash
+# clone the repo
+git clone https://github.com/your-username/gumdrop-space.git
+cd gumdrop-space
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# install dependencies (if any)
+npm install
+
+# start dev server (example)
+npm run dev
+```
+Then open `http://localhost:3000` or whichever port your dev server is running on in your browser.
+
+## How to Contribute
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Fork the repository.
+2. Create a new feature branch: `git checkout -b feature/your-feature-name`.
+3. Make your changes and commit them: `git commit -m 'feat: add some feature'`.
+4. Push to your fork: `git push origin feature/my-idea`.
+5. Submit a pull request.
 
 **Use GitHub Codespaces**
 

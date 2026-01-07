@@ -14,20 +14,20 @@ interface StoryModalProps {
 const StoryModal = ({ isOpen, onClose }: StoryModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-background/80 backdrop-blur-xl border-border/50">
+      <DialogContent className="sm:max-w-lg bg-background/85 backdrop-blur-xl border-border/50">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-foreground">
             The Story Behind This Site
           </DialogTitle>
         </DialogHeader>
         <DialogDescription asChild>
-          <div className="space-y-4 text-sm leading-normal text-gray-700">
+          <div className="space-y-4 text-sm leading-normal text-[#4c4c4c]">
             <p>
               <p className="text-[16px] text-foreground font-medium mb-2">
               Hello fellow human bean!
               </p>
-              When I was making Gumdrop, I saw most of these workspace tools 
-              out there was too complex, has a big monthly subcription plan.
+              When I was making Gumdrop, I noticed that most of these workspace tools 
+              out there was too complex and came with a big monthly subcription plan.
               And some of them just don't fit the vibes.
               Which is why I decided to create my own space. I'd say it's a 
               blend of nostalgia and a few tools that I found useful to work 

@@ -32,6 +32,7 @@ const Index = () => {
   const [triggerPause, setTriggerPause] = useState(false);
   const [showBreathing, setShowBreathing] = useState(false);
   const [showStory, setShowStory] = useState(false);
+  const [showNamemodal, setShowNamemodal] = useState(false);
 
   const handleToggleWidget = (widget: keyof typeof visibleWidgets) => {
     setVisibleWidgets((prev) => ({
@@ -95,7 +96,11 @@ const Index = () => {
       style={{ backgroundImage: `url(${backgrounds[currentBg]})` }}
     >
       {/* Name Modal */}
-      <NameModal onNameSet={handleNameSet} />
+      <NameModal 
+        onNameSet={handleNameSet} 
+        isOpen={showNamemodal}
+        onClose={() => setShowNamemodal(false)}
+      />
 
       {/* Subtle Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
@@ -108,6 +113,7 @@ const Index = () => {
           onToggleWidget={handleToggleWidget} 
           userName={userName}
           onStoryClick={() => setShowStory(true)}
+          onNameChange={() => setShowNamemodal(true)}
         />
 
         {/* Main Content Area */}
