@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain, Share2, Check, BookOpen, Download, User, MoreVertical } from "lucide-react";
+import { FileText, ListTodo, Timer, Volume2, MapPin, Cloud, Sun, CloudRain, Share2, Check, BookOpen, Download, User, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -198,21 +198,17 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
           <BookOpen className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-1.5">
-          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-primary-foreground font-medium text-xs">
-              {userName ? userName.charAt(0).toUpperCase() : "?"}
-            </span>
-          </div>
-          <span className="text-xs text-foreground">{userName ? `${userName}'s Room` : "My Room"}</span>
-        </div>
-
-        {/* Menu Dropdown */}
+        {/* User Name Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="px-2 py-1 bg-primary text-primary-foreground rounded-md text-xs font-medium hover:bg-primary/90 transition-colors flex items-center gap-1">
-              <MoreVertical className="w-3 h-3" />
-              Menu
+            <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-secondary transition-colors">
+              <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-primary-foreground font-medium text-xs">
+                  {userName ? userName.charAt(0).toUpperCase() : "?"}
+                </span>
+              </div>
+              <span className="text-xs text-foreground">{userName ? `${userName}'s Room` : "My Room"}</span>
+              <ChevronDown className="w-3 h-3 text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
@@ -224,12 +220,17 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
               <Download className="w-4 h-4 mr-2" />
               {isInstalled ? "Already Installed" : "Install App"}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleShare} className="cursor-pointer">
-              {copied ? <Check className="w-4 h-4 mr-2" /> : <Share2 className="w-4 h-4 mr-2" />}
-              {copied ? "Copied!" : "Share Link"}
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Share Button */}
+        <button
+          onClick={handleShare}
+          className="px-2 py-1 bg-primary text-primary-foreground rounded-md text-xs font-medium hover:bg-primary/90 transition-colors flex items-center gap-1"
+        >
+          {copied ? <Check className="w-3 h-3" /> : <Share2 className="w-3 h-3" />}
+          {copied ? "Copied!" : "Share"}
+        </button>
       </div>
     </nav>
   );
