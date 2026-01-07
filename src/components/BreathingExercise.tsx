@@ -119,7 +119,7 @@ const BreathingExercise = ({ isOpen, onClose }: BreathingExerciseProps) => {
       <div className="relative flex items-center justify-center w-64 h-64">
         {/* Outer glow ring - animates */}
         <div 
-          className="absolute w-68 h-68 rounded-full bg-primary/15 blur-xl transition-transform duration-100"
+          className="absolute w-68 h-68 rounded-full bg-primary/15 blur-xl will-change-transform"
           style={{ transform: `scale(${circleScale})` }}
         />
         
