@@ -169,7 +169,7 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
           {/* User Name Dropdown */}
         <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-secondary transition-colors">
+            <button className="flex items-center gap-1.5 pr-1.5 rounded-md hover:bg-secondary transition-colors">
               <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                 <span className="text-primary-foreground font-medium text-xs">
                   {userName ? userName.charAt(0).toUpperCase() : "?"}
@@ -179,7 +179,7 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
               <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-[154px]">
             <DropdownMenuItem onClick={onNameChange} className="cursor-pointer">
               <User className="w-4 h-4 mr-2" />
               Change Name
