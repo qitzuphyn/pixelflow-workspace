@@ -37,6 +37,7 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
   const [copied, setCopied] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check if app is already installed
@@ -199,7 +200,7 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
         </button>
 
         {/* User Name Dropdown */}
-        <DropdownMenu>
+        <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-secondary transition-colors">
               <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
@@ -208,7 +209,7 @@ const Navbar = ({ visibleWidgets, onToggleWidget, userName, onStoryClick, onName
                 </span>
               </div>
               <span className="text-xs text-foreground">{userName ? `${userName}'s Room` : "My Room"}</span>
-              <ChevronDown className="w-3 h-3 text-muted-foreground" />
+              <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
