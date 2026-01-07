@@ -90,12 +90,17 @@ const SoundWidget = () => {
             if (event.data === window.YT.PlayerState.PLAYING) {
               setIsYoutubePlaying(true);
               // Start tracking progress
-              progressInterval.current = setInterval(() => {
-                if (playerRef.current) {
-                  setCurrentTime(playerRef.current.getCurrentTime());
-                  setDuration(playerRef.current.getDuration());
-                }
-              }, 1000);
+              if (!progressInterval.current) {
+                progressInterval.current = setInterval(() => {
+                  if (playerRef.current && playerRef.current.getCurrentTime) {
+                    const newTime = playerRef.current.getCurrentTime();
+                    const newDuration = playerRef.current.getDuration();
+                    // Only update if values have actually changed significantly
+                    setCurrentTime(prev => Math.abs(prev - newTime) > 0.5 ? newTime : prev);
+                    setDuration(prev => prev !== newDuration ? newDuration : prev);
+                  }
+                }, 1000);
+              }
             } else {
               setIsYoutubePlaying(false);
               if (progressInterval.current) {
