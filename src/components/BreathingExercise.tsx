@@ -117,15 +117,15 @@ const BreathingExercise = ({ isOpen, onClose }: BreathingExerciseProps) => {
 
       {/* Breathing circle */}
       <div className="relative flex items-center justify-center w-64 h-64">
-        {/* Outer glow ring - animates */}
+      {/* Outer glow ring - animates */}
         <div 
-          className="absolute w-64 h-64 rounded-full bg-primary/20 blur-xl transition-transform duration-100"
+          className="absolute w-64 h-64 rounded-full bg-primary/20 blur-xl will-change-transform"
           style={{ transform: `scale(${circleScale})` }}
         />
         
         {/* Main circle - animates */}
         <div 
-          className="absolute w-48 h-48 rounded-full bg-background/30 backdrop-blur-md border border-border/30 shadow-2xl transition-transform duration-100"
+          className="absolute w-48 h-48 rounded-full bg-background/30 backdrop-blur-md border border-border/30 shadow-2xl will-change-transform"
           style={{ transform: `scale(${circleScale})` }}
         >
           {/* Inner gradient */}
