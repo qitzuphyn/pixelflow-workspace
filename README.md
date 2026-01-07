@@ -10,6 +10,16 @@ Gumdrop is a **zen browser-based focus room** that combines ambient visuals and 
 - PWA support: installable on desktop via browser, with offline access to core UI.
 - Runs entirely in the browser; no account or backend required.
 
+## What technologies are used for this project?
+
+This project is built with:
+
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+
 ## 🚀 Getting started
 
 ### Prerequisites
@@ -32,7 +42,13 @@ npm run dev
 ```
 Then open `http://localhost:3000` or whichever port your dev server is running on in your browser.
 
-## How to Contribute
+## 🤝 Contributing
+Contributions are very welcome! Here are some good starting points:
+- New ambient scenes or themes (e.g. “rainy café”, “night library”).
+- Additional soundscapes and better audio qualities.
+- Accessibility improvements (keyboard navigation, contrast, screen reader support).
+
+### How to Contribute
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -43,32 +59,5 @@ Follow these steps:
 4. Push to your fork: `git push origin feature/my-idea`.
 5. Submit a pull request.
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 License
+This project is licensed under the MIT License – see the LICENSE file for details.
